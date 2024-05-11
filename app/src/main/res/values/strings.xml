@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">StudyPal</string>
+    <string name="find_buddy_title">Find Buddy</string>
+    <string name="chat_room_title">Chat Room</string>
+    <string name="book_room_title">Book Room</string>
+    <string name="profile_title">Profile</string>
+    <string name="login_title">LOG IN</string>
+    <string name="register_title">Register</string>
+    <string name="forgot_password_title">Forgot Password</string>
+    <string name="enter_name">USERNAME</string>
+    <string name="enter_phone_no">MOBILE NUMBER</string>
+    <string name="enter_email">EMAIL ADDRESS</string>
+    <string name="enter_password">PASSWORD</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="forget_pwd_text">FORGOTTEN PASSWORD?</string>
+    <string name="reset_pwd_text">RESET PASSWORD</string>
+    <string name="register_label">NO ACCOUNT? SIGN UP HERE</string>
+    <string name="login_label">HAVE ACCOUNT? SIGN IN HERE</string>
+    <string name="back_to_login">BACK TO LOGIN</string>
+    <string name="google_map_api_key">AIzaSyA_0OUex5GS9XOMk5s4k8_1kuemeE9svL0</string>
+</resources>

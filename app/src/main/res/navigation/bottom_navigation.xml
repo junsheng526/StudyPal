@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bottom_navigation"
+    app:startDestination="@+id/navigation_find_buddy">
+
+    <fragment
+        android:id="@+id/navigation_find_buddy"
+        android:name="com.example.studypal.findbuddy.view.ui.FindBuddyFragment"
+        android:label="@string/find_buddy_title"
+        tools:layout="@layout/fragment_find_buddy" />
+
+    <fragment
+        android:id="@+id/navigation_chat_room"
+        android:name="com.example.studypal.chatroom.view.ui.ChatRoomFragment"
+        android:label="@string/chat_room_title"
+        tools:layout="@layout/fragment_chat_room" />
+
+    <fragment
+        android:id="@+id/navigation_book_room"
+        android:name="com.example.studypal.bookroom.view.ui.BookRoomFragment"
+        android:label="@string/book_room_title"
+        tools:layout="@layout/fragment_book_room" />
+
+    <fragment
+        android:id="@+id/navigation_profile"
+        android:name="com.example.studypal.profile.view.ui.ProfileFragment"
+        android:label="@string/profile_title"
+        tools:layout="@layout/fragment_profile" />
+
+</navigation>
