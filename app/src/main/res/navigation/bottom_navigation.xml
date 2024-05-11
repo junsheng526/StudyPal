@@ -21,12 +21,44 @@
         android:id="@+id/navigation_book_room"
         android:name="com.example.studypal.bookroom.view.ui.BookRoomFragment"
         android:label="@string/book_room_title"
-        tools:layout="@layout/fragment_book_room" />
+        tools:layout="@layout/fragment_book_room">
+        <action
+            android:id="@+id/action_navigation_book_room_to_bookingDetailsFragment"
+            app:destination="@id/bookingDetailsFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_profile"
         android:name="com.example.studypal.profile.view.ui.ProfileFragment"
         android:label="@string/profile_title"
         tools:layout="@layout/fragment_profile" />
+
+    <fragment
+        android:id="@+id/bookingDetailsFragment"
+        android:name="com.example.studypal.bookroom.view.ui.BookingDetailsFragment"
+        android:label="fragment_booking_details"
+        tools:layout="@layout/fragment_booking_details">
+        <argument
+            android:name="selectedVenue"
+            app:argType="com.example.studypal.bookroom.model.Venue" />
+        <action
+            android:id="@+id/action_bookingDetailsFragment_to_navigation_book_room"
+            app:destination="@id/navigation_book_room" />
+        <action
+            android:id="@+id/action_bookingDetailsFragment_to_paymentFragment"
+            app:destination="@id/paymentFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/paymentFragment"
+        android:name="com.example.studypal.bookroom.view.ui.PaymentFragment"
+        android:label="fragment_payment"
+        tools:layout="@layout/fragment_payment" >
+        <action
+            android:id="@+id/action_paymentFragment_to_bookingDetailsFragment"
+            app:destination="@id/bookingDetailsFragment" />
+        <argument
+            android:name="bookingDetails"
+            app:argType="com.example.studypal.bookroom.model.Booking" />
+    </fragment>
 
 </navigation>

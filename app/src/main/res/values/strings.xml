@@ -18,4 +18,6 @@
     <string name="login_label">HAVE ACCOUNT? SIGN IN HERE</string>
     <string name="back_to_login">BACK TO LOGIN</string>
     <string name="google_map_api_key">AIzaSyA_0OUex5GS9XOMk5s4k8_1kuemeE9svL0</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

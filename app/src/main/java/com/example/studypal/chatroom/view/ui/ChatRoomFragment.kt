@@ -19,7 +19,6 @@ class ChatRoomFragment : Fragment() {
 
     private lateinit var binding: FragmentChatRoomBinding
     private val chatViewModel: ChatViewModel by activityViewModels()
-    private val navController by lazy { findNavController() }
     private lateinit var friendAdapter: UserFriendAdapter
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
