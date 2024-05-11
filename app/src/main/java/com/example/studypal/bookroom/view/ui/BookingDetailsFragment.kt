@@ -82,6 +82,10 @@ class BookingDetailsFragment : Fragment() {
             findNavController().navigate(action)
         }
 
+        binding.cancelBtn.setOnClickListener {
+            findNavController().popBackStack(R.id.navigation_book_room, false)
+        }
+
         return(binding.root)
     }
 

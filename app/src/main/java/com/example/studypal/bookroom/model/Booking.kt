@@ -9,5 +9,5 @@ data class Booking(
     val bookingDate: String,
     val startTime: String,
     val endTime: String,
-    val numberOfPax: Int
+    val numberOfPax: Int,
 ) : Parcelable

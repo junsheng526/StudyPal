@@ -59,6 +59,18 @@
         <argument
             android:name="bookingDetails"
             app:argType="com.example.studypal.bookroom.model.Booking" />
+        <action
+            android:id="@+id/action_paymentFragment_to_paymentDetailsFragment"
+            app:destination="@id/paymentDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/paymentDetailsFragment"
+        android:name="com.example.studypal.bookroom.view.ui.PaymentDetailsFragment"
+        android:label="fragment_payment_details"
+        tools:layout="@layout/fragment_payment_details" >
+        <action
+            android:id="@+id/action_paymentDetailsFragment_to_paymentFragment"
+            app:destination="@id/paymentFragment" />
     </fragment>
 
 </navigation>
