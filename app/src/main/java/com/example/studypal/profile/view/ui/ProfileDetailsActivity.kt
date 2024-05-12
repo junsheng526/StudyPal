@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
@@ -60,13 +61,17 @@ class ProfileDetailsActivity : AppCompatActivity() {
                 user?.let { populateUserData(it) }
             }
         }
+
+        val options = arrayOf("Visual", "Auditory", "Kinesthetic")
+        val adapter = ArrayAdapter(this, R.layout.dropdown_item, options)
+        binding.tvLearningStyle.setAdapter(adapter)
     }
 
     private fun submit() {
         val user = User(
             name = binding.editTextName.text.toString().trim(),
             studyField = binding.editTextStudyField.text.toString().trim(),
-            learningStyle = binding.editTextLearningStyle.text.toString().trim(),
+            learningStyle = binding.tvLearningStyle.text.toString().trim(),
             interest = binding.editTextInterest.text.toString().trim(),
             photo = binding.imgProfile.cropToBlob(300, 300),
         )
@@ -98,7 +103,9 @@ class ProfileDetailsActivity : AppCompatActivity() {
         with(binding) {
             editTextName.setText(user.name)
             editTextStudyField.setText(user.studyField)
-            editTextLearningStyle.setText(user.learningStyle)
+            val learningStyleOptions = arrayOf("Visual", "Auditory", "Kinesthetic")
+            val defaultLearningStyle = user.learningStyle ?: learningStyleOptions[0]
+            tvLearningStyle.setText(defaultLearningStyle, false)
             editTextInterest.setText(user.interest)
             binding.imgProfile.setImageBitmap(user.photo?.toBitmap())
         }

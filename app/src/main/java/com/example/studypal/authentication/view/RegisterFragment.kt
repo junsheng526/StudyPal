@@ -97,9 +97,8 @@ class RegisterFragment : Fragment() {
             binding.editTextEmail.error = "This field is required!"
             return false
         }
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            binding.editTextEmail.error = "Invalid email format!"
-            return false
+        if (!isValidTarumtEmail(email)){
+            binding.editTextEmail.error = "Invalid email format/please use TARUMT email"
         }
         if (pwd == "") {
             binding.editTextPassword.error = "This field is required!"
@@ -107,6 +106,16 @@ class RegisterFragment : Fragment() {
         }
         if (binding.editTextPassword.length() < 8) {
             binding.editTextPassword.error = "Password should at least 8 characters long!"
+            return false
+        }
+        return true
+    }
+
+    private fun isValidTarumtEmail(email: String): Boolean {
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+            return false
+        }
+        if (!email.contains("@student.tarc.edu.my")){
             return false
         }
         return true

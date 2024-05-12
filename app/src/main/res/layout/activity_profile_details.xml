@@ -66,12 +66,38 @@
             android:layout_marginTop="16dp"
             android:hint="STUDY FIELD"/>
 
-        <EditText
-            android:id="@+id/editTextLearningStyle"
+<!--        <EditText-->
+<!--            android:id="@+id/editTextLearningStyle"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="16dp"-->
+<!--            android:hint="LEARNING STYLE"/>-->
+
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:hint="LEARNING STYLE"/>
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginVertical="10dp"
+            android:text="LEARNING STYLE"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/learningStyle"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="5dp"
+            android:layout_weight="1">
+
+            <AutoCompleteTextView
+                android:id="@+id/tvLearningStyle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:editable="false"
+                android:text="Visual" />
+
+        </com.google.android.material.textfield.TextInputLayout>
 
         <EditText
             android:id="@+id/editTextInterest"

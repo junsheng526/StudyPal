@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.example.studypal.R
+import com.example.studypal.bookroom.model.Venue
 import com.example.studypal.bookroom.view.adapter.VenueAdapter
 import com.example.studypal.bookroom.viewmodel.BookRoomViewModel
 import com.example.studypal.databinding.FragmentBookRoomBinding
@@ -26,10 +27,23 @@ class BookRoomFragment : Fragment() {
     ): View? {
         binding = FragmentBookRoomBinding.inflate(inflater, container, false)
 
-        venueAdapter = VenueAdapter { venue ->
+//        venueAdapter = VenueAdapter { venue ->
+//            val action = BookRoomFragmentDirections.actionNavigationBookRoomToBookingDetailsFragment(venue)
+//            nav.navigate(action)
+//        }
+
+        val onItemClick: (Venue) -> Unit = { venue ->
+//            val action = BookRoomFragmentDirections.actionNavigationBookRoomToBookingDetailsFragment(venue)
+//            nav.navigate(action)
+        }
+
+        val onBookingButtonClick: (Venue) -> Unit = { venue ->
             val action = BookRoomFragmentDirections.actionNavigationBookRoomToBookingDetailsFragment(venue)
             nav.navigate(action)
         }
+
+        // Initialize venue adapter with both item click and button click handlers
+        venueAdapter = VenueAdapter(onItemClick, onBookingButtonClick)
 
         binding.rvVenueList.adapter = venueAdapter
         binding.rvVenueList.addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))

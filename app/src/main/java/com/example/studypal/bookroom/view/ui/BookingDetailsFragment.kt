@@ -38,7 +38,7 @@ class BookingDetailsFragment : Fragment() {
         binding.tvVenue.text = selectedVenue.venueName
         binding.tvOutlet.text = selectedVenue.outletName
 
-        val seatOptions = arrayOf("1", "2", "3", "4", "5")
+        val seatOptions = arrayOf("1", "2", "3", "4")
         val adapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, seatOptions)
         binding.noOfPaxTv.setAdapter(adapter)
 
