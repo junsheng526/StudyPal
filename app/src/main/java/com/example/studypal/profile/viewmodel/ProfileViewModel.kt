@@ -50,6 +50,51 @@ class ProfileViewModel : ViewModel() {
         }
     }
 
+    suspend fun update(user: User): Boolean {
+        return withContext(Dispatchers.IO) {
+            try {
+                auth = Firebase.auth
+                val currentUser = auth.currentUser
+                if (currentUser != null) {
+                    val documentRef = col.document(currentUser.uid)
+                    val updates = mutableMapOf<String, Any?>()
+
+                    // Update specific fields of the user document
+                    if (user.name.isNotEmpty()) {
+                        updates["name"] = user.name
+                    }
+                    if (user.studyField.isNotEmpty()) {
+                        updates["studyField"] = user.studyField
+                    }
+                    if (user.learningStyle.isNotEmpty()) {
+                        updates["learningStyle"] = user.learningStyle
+                    }
+                    if (user.interest.isNotEmpty()) {
+                        updates["interest"] = user.interest
+                    }
+                    // Update photo if available
+                    if (user.photo != null) {
+                        updates["photo"] = user.photo
+                    }
+
+                    // Perform the update with only specified fields
+                    documentRef.update(updates)
+                        .addOnSuccessListener {
+                            Log.i("FireStore", "User fields updated successfully")
+                        }
+                        .addOnFailureListener { e ->
+                            Log.e("FireStore", "Error updating user fields: $e")
+                        }
+                        .await()
+                }
+                true
+            } catch (e: Exception) {
+                Log.e("FireStore", "Firestore operation failed: $e")
+                false
+            }
+        }
+    }
+
     fun validate(user: User): String {
         var e = ""
 

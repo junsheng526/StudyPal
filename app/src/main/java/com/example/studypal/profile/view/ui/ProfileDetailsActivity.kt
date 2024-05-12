@@ -68,12 +68,12 @@ class ProfileDetailsActivity : AppCompatActivity() {
             studyField = binding.editTextStudyField.text.toString().trim(),
             learningStyle = binding.editTextLearningStyle.text.toString().trim(),
             interest = binding.editTextInterest.text.toString().trim(),
-            photo = binding.imgProfile.cropToBlob(300,300),
+            photo = binding.imgProfile.cropToBlob(300, 300),
         )
 
         lifecycleScope.launch {
             val err = vm.validate(user)
-            if (err != "") {
+            if (err.isNotEmpty()) {
                 AlertDialog.Builder(this@ProfileDetailsActivity)
                     .setIcon(R.drawable.ic_error)
                     .setTitle("Error")
@@ -82,8 +82,15 @@ class ProfileDetailsActivity : AppCompatActivity() {
                     .show()
                 return@launch
             }
-            vm.set(user)
-            onBackPressed()
+
+            // Update user fields in Firestore
+            val updated = vm.update(user)
+            if (updated) {
+                Toast.makeText(this@ProfileDetailsActivity, "Profile updated successfully", Toast.LENGTH_SHORT).show()
+                onBackPressed() // Navigate back
+            } else {
+                Toast.makeText(this@ProfileDetailsActivity, "Failed to update profile", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
