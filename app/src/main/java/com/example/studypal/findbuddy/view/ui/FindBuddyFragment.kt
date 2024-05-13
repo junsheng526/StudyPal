@@ -235,38 +235,42 @@ class FindBuddyFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClic
         if (currentUserUid != null) {
             // Reference to the current user's document
             val currentUserRef = db.collection("user").document(currentUserUid)
+            // Reference to the selected user's document
+            val selectedUserRef = db.collection("user").document(userId)
 
-            // Check if the user is already a friend
-            currentUserRef.get()
-                .addOnSuccessListener { userDocument ->
-                    val friends = userDocument.get("friends") as? List<String>
+            // Start a Firestore transaction
+            db.runTransaction { transaction ->
+                // Get current user's document and selected user's document
+                val currentUserDoc = transaction.get(currentUserRef)
+                val selectedUserDoc = transaction.get(selectedUserRef)
 
-                    if (friends != null && friends.contains(userId)) {
-                        // User is already a friend, show a message or perform an action
-                        Toast.makeText(requireContext(), "User is already your friend", Toast.LENGTH_SHORT).show()
-                    } else {
-                        // Add the user to the friends list
-                        db.runTransaction { transaction ->
-                            val userSnapshot = transaction.get(currentUserRef)
+                // Retrieve or initialize the friends arrays
+                val currentUserFriends = currentUserDoc.get("friends") as? MutableList<String> ?: mutableListOf()
+                val selectedUserFriends = selectedUserDoc.get("friends") as? MutableList<String> ?: mutableListOf()
 
-                            val existingFriends = userSnapshot.get("friends") as? MutableList<String> ?: mutableListOf()
-                            existingFriends.add(userId)
+                // Check if the selected user is already a friend of the current user
+                if (!currentUserFriends.contains(userId)) {
+                    // Add the selected user to the current user's friends list
+                    currentUserFriends.add(userId)
+                    // Update the current user's friends array in Firestore
+                    transaction.update(currentUserRef, "friends", currentUserFriends)
+                }
 
-                            transaction.update(currentUserRef, "friends", existingFriends)
-                        }
-                            .addOnSuccessListener {
-                                // Friend added successfully
-                                Toast.makeText(requireContext(), "User added as friend", Toast.LENGTH_SHORT).show()
-                            }
-                            .addOnFailureListener { exception ->
-                                // Failed to add friend
-                                Toast.makeText(requireContext(), "Failed to add friend", Toast.LENGTH_SHORT).show()
-                            }
-                    }
+                // Check if the current user is already a friend of the selected user
+                if (!selectedUserFriends.contains(currentUserUid)) {
+                    // Add the current user to the selected user's friends list
+                    selectedUserFriends.add(currentUserUid)
+                    // Update the selected user's friends array in Firestore
+                    transaction.update(selectedUserRef, "friends", selectedUserFriends)
+                }
+            }
+                .addOnSuccessListener {
+                    // Friend added successfully
+                    Toast.makeText(requireContext(), "User added as friend", Toast.LENGTH_SHORT).show()
                 }
                 .addOnFailureListener { exception ->
-                    // Failed to retrieve current user's data
-                    Toast.makeText(requireContext(), "Failed to retrieve user data", Toast.LENGTH_SHORT).show()
+                    // Failed to add friend
+                    Toast.makeText(requireContext(), "Failed to add friend", Toast.LENGTH_SHORT).show()
                 }
         } else {
             // User not authenticated

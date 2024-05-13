@@ -52,18 +52,31 @@
         android:paddingHorizontal="36dp"
         android:orientation="vertical">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="NAME"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
+
         <EditText
             android:id="@+id/editTextName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
             android:hint="NAME"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="STUDY FIELD"
+            android:layout_marginTop="16dp"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
 
         <EditText
             android:id="@+id/editTextStudyField"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
             android:hint="STUDY FIELD"/>
 
 <!--        <EditText-->
@@ -76,9 +89,8 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="8dp"
-            android:layout_marginVertical="10dp"
             android:text="LEARNING STYLE"
+            android:layout_marginTop="16dp"
             android:textColor="@color/black"
             android:textSize="18sp" />
 
@@ -99,11 +111,19 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="INTEREST"
+            android:layout_marginTop="16dp"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
+
         <EditText
             android:id="@+id/editTextInterest"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="16dp"
+            android:layout_marginBottom="10dp"
             android:hint="INTEREST"/>
 
         <androidx.appcompat.widget.AppCompatButton
