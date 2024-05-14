@@ -7,4 +7,5 @@ data class Friend(
     var id   : String = "",
     var name : String = "",
     var photo: Blob = Blob.fromBytes(ByteArray(0)),
+    val lastMessageTimestamp: Long = 0
 )

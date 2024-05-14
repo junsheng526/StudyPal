@@ -9,7 +9,6 @@ import com.example.studypal.chatroom.model.Message
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.auth
 import com.google.firebase.firestore.Blob
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.Query
@@ -48,13 +47,13 @@ class ChatViewModel : ViewModel() {
 
                     if (snapshot != null && snapshot.exists()) {
                         val friendsArray = snapshot["friends"] as? List<String> ?: emptyList()
-                        fetchFriendDetails(friendsArray)
+                        fetchFriendDetailsWithLastMessage(friendsArray)
                     }
                 }
         }
     }
 
-    private fun fetchFriendDetails(friendUserIds: List<String>) {
+    private fun fetchFriendDetailsWithLastMessage(friendUserIds: List<String>) {
         val friendList = mutableListOf<Friend>()
 
         for (friendUserId in friendUserIds) {
@@ -63,11 +62,11 @@ class ChatViewModel : ViewModel() {
                 .addOnSuccessListener { documentSnapshot ->
                     if (documentSnapshot.exists()) {
                         val name = documentSnapshot["name"] as? String ?: ""
-                        val photo =
-                            documentSnapshot["photo"] as? Blob ?: Blob.fromBytes(ByteArray(0))
-                        val friend = Friend(friendUserId, name, photo)
-                        friendList.add(friend)
-                        friends.value = friendList
+                        val photo = documentSnapshot["photo"] as? Blob ?: Blob.fromBytes(ByteArray(0))
+                        fetchLastMessageTimestamp(friendUserId) { timestamp ->
+                            val friend = Friend(friendUserId, name, photo, timestamp)
+                            updateFriendList(friendList, friend)
+                        }
                     }
                 }
                 .addOnFailureListener { e ->
@@ -76,12 +75,54 @@ class ChatViewModel : ViewModel() {
         }
     }
 
+    private fun fetchLastMessageTimestamp(friendUserId: String, callback: (Long) -> Unit) {
+        val chatRoomId = if (currentUser != null) {
+            if (currentUser.uid < friendUserId) {
+                "${currentUser.uid}_$friendUserId"
+            } else {
+                "${friendUserId}_${currentUser.uid}"
+            }
+        } else {
+            return
+        }
+
+        firestore.collection("chats")
+            .document(chatRoomId)
+            .collection("messages")
+            .orderBy("timestamp", Query.Direction.DESCENDING)
+            .limit(1)
+            .addSnapshotListener { querySnapshot, error ->
+                if (error != null) {
+                    Log.e("ChatViewModel", "Error fetching last message timestamp: $error")
+                    callback(0L)
+                    return@addSnapshotListener
+                }
+
+                if (querySnapshot != null && !querySnapshot.isEmpty) {
+                    val lastMessage = querySnapshot.documents[0]
+                    val timestamp = lastMessage.getLong("timestamp") ?: 0L
+                    callback(timestamp)
+                } else {
+                    callback(0L) // No messages, return 0
+                }
+            }
+    }
+
+    private fun updateFriendList(friendList: MutableList<Friend>, updatedFriend: Friend) {
+        val index = friendList.indexOfFirst { it.id == updatedFriend.id }
+        if (index != -1) {
+            friendList[index] = updatedFriend
+        } else {
+            friendList.add(updatedFriend)
+        }
+        friends.value = friendList.sortedByDescending { it.lastMessageTimestamp }
+    }
+
     private fun getUserDocumentReference(userDocumentId: String): DocumentReference {
         return firestore.collection("user").document(userDocumentId)
     }
 
     private fun loadMessages(friendId: String) {
-        // Construct the chat room ID based on both users' IDs
         val chatRoomId = if (currentUser != null) {
             if (currentUser.uid < friendId) {
                 "${currentUser.uid}_$friendId"
