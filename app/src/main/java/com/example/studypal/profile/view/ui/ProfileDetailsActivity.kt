@@ -107,7 +107,13 @@ class ProfileDetailsActivity : AppCompatActivity() {
             val defaultLearningStyle = user.learningStyle ?: learningStyleOptions[0]
             tvLearningStyle.setText(defaultLearningStyle, false)
             editTextInterest.setText(user.interest)
-            binding.imgProfile.setImageBitmap(user.photo?.toBitmap())
+            if (user.photo.toBitmap() != null) {
+                // Set the user's photo if it's not null
+                binding.imgProfile.setImageBitmap(user.photo.toBitmap())
+            }
+            else{
+                binding.imgProfile.setImageResource(R.drawable.profile)
+            }
         }
     }
 }

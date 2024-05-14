@@ -146,4 +146,16 @@ class ChatViewModel : ViewModel() {
                 }
         }
     }
+
+    fun getTopTwoFriends(): Pair<Friend?, Friend?> {
+        val friendList = friends.value ?: emptyList()
+
+        // Check if there are at least two friends in the list
+        return if (friendList.size >= 2) {
+            Pair(friendList[0], friendList[1]) // Return the first two friends
+        } else {
+            // Return null for the second friend if there's only one friend or none
+            Pair(friendList.getOrNull(0), null)
+        }
+    }
 }

@@ -112,8 +112,27 @@ class PaymentDetailsFragment : Fragment() {
                 val expiryDate = binding.editTextExpiryDate.text.toString().trim()
                 val securityCode = binding.editTextSecurityCode.text.toString().trim()
 
-                if (cardNumber.isEmpty() || nameOnCard.isEmpty() || expiryDate.isEmpty() || securityCode.isEmpty()) {
-                    Toast.makeText(requireContext(), "Please fill in all card details", Toast.LENGTH_SHORT).show()
+                // Validate Card Number
+                if (!isValidCardNumber(cardNumber)) {
+                    Toast.makeText(requireContext(), "Invalid card number. Please enter 16-digit card number.", Toast.LENGTH_SHORT).show()
+                    return false
+                }
+
+                // Validate Name on Card (Only accept alphabetic characters)
+                if (!isValidNameOnCard(nameOnCard)) {
+                    Toast.makeText(requireContext(), "Invalid name on card. Only alphabetic characters are allowed.", Toast.LENGTH_SHORT).show()
+                    return false
+                }
+
+                // Validate Expiry Date (Format: MM/YY)
+                if (!isValidExpiryDate(expiryDate)) {
+                    Toast.makeText(requireContext(), "Invalid expiry date. Please enter expiry date in MM/YY format.", Toast.LENGTH_SHORT).show()
+                    return false
+                }
+
+                // Validate Security Code (3-digit number)
+                if (!isValidSecurityCode(securityCode)) {
+                    Toast.makeText(requireContext(), "Invalid security code. Please enter a 3-digit security code.", Toast.LENGTH_SHORT).show()
                     return false
                 }
             }
@@ -121,8 +140,15 @@ class PaymentDetailsFragment : Fragment() {
                 val phoneNumber = binding.editTextPhoneNumber.text.toString().trim()
                 val pinNumber = binding.editPinNumber.text.toString().trim()
 
-                if (phoneNumber.isEmpty() || pinNumber.isEmpty()) {
-                    Toast.makeText(requireContext(), "Please fill in all eWallet details", Toast.LENGTH_SHORT).show()
+                // Validate Phone Number (Malaysia phone number prefix + 9 digits)
+                if (!isValidPhoneNumber(phoneNumber)) {
+                    Toast.makeText(requireContext(), "Invalid phone number. Please enter a valid Malaysian phone number.", Toast.LENGTH_SHORT).show()
+                    return false
+                }
+
+                // Validate PIN Number (6-digit number)
+                if (!isValidPinNumber(pinNumber)) {
+                    Toast.makeText(requireContext(), "Invalid PIN number. Please enter a 6-digit PIN.", Toast.LENGTH_SHORT).show()
                     return false
                 }
             }
@@ -132,5 +158,31 @@ class PaymentDetailsFragment : Fragment() {
             }
         }
         return true
+    }
+
+// Validation Functions
+
+    private fun isValidCardNumber(cardNumber: String): Boolean {
+        return cardNumber.length == 16 && cardNumber.matches(Regex("[0-9]+"))
+    }
+
+    private fun isValidNameOnCard(nameOnCard: String): Boolean {
+        return nameOnCard.matches(Regex("[a-zA-Z ]+"))
+    }
+
+    private fun isValidExpiryDate(expiryDate: String): Boolean {
+        return expiryDate.matches(Regex("^(0[1-9]|1[0-2])/[0-9]{2}\$"))
+    }
+
+    private fun isValidSecurityCode(securityCode: String): Boolean {
+        return securityCode.length == 3 && securityCode.matches(Regex("[0-9]+"))
+    }
+
+    private fun isValidPhoneNumber(phoneNumber: String): Boolean {
+        return phoneNumber.matches(Regex("^(01)[0-9]{8,9}\$"))
+    }
+
+    private fun isValidPinNumber(pinNumber: String): Boolean {
+        return pinNumber.length == 6 && pinNumber.matches(Regex("[0-9]+"))
     }
 }

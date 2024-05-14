@@ -11,6 +11,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.studypal.R
 import com.example.studypal.authentication.view.AuthenticationActivity
+import com.example.studypal.chatroom.viewmodel.ChatViewModel
 import com.example.studypal.databinding.FragmentProfileBinding
 import com.example.studypal.profile.viewmodel.ProfileViewModel
 import com.example.studypal.utility.toBitmap
@@ -24,6 +25,7 @@ class ProfileFragment : Fragment() {
     private lateinit var binding: FragmentProfileBinding
     private lateinit var auth: FirebaseAuth
     private val vm: ProfileViewModel by activityViewModels()
+    private val chatViewModel: ChatViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -72,6 +74,26 @@ class ProfileFragment : Fragment() {
                         binding.imgProfile.setImageResource(R.drawable.profile)
                     }
                 }
+            }
+        }
+
+        chatViewModel.getFriends().observe(viewLifecycleOwner) {
+            val (friend1, friend2) = chatViewModel.getTopTwoFriends()
+
+            if(friend1 == null && friend2 == null){
+                binding.tvBuddyLabel.visibility = View.GONE
+            }
+
+            if (friend1 != null) {
+                binding.friend1.visibility = View.VISIBLE
+                binding.avatar1.setImageBitmap(friend1.photo?.toBitmap())
+                binding.tvFriendName1.text = friend1.name
+            }
+
+            if (friend2 != null) {
+                binding.friend2.visibility = View.VISIBLE
+                binding.avatar2.setImageBitmap(friend2.photo?.toBitmap())
+                binding.tvFriendName2.text = friend2.name
             }
         }
 

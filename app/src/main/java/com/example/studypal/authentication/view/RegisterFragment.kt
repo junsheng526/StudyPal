@@ -3,11 +3,11 @@ package com.example.studypal.authentication.view
 import android.os.Bundle
 import android.util.Log
 import android.util.Patterns
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -18,7 +18,9 @@ import com.example.studypal.databinding.FragmentRegisterBinding
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
+import kotlin.random.Random
 
 class RegisterFragment : Fragment() {
 
@@ -56,6 +58,8 @@ class RegisterFragment : Fragment() {
         return binding.root
     }
 
+    private val db = FirebaseFirestore.getInstance()
+
     private fun saveUserToFireStoreDb() {
 
         val userId = FirebaseAuth.getInstance().currentUser!!.uid
@@ -70,18 +74,54 @@ class RegisterFragment : Fragment() {
 
         lifecycleScope.launch {
             val success: Boolean = vm.set(userObj)
-            if(success){
+            if (success) {
+                val (latitude, longitude) = generateRandomCoordinates()
+                val locationData = hashMapOf(
+                    "latitude" to latitude,
+                    "longitude" to longitude
+                )
+                db.collection("location").document(userId)
+                    .set(locationData)
+                    .addOnSuccessListener {
+                        // Success handling
+                        Toast.makeText(context, "Account created successfully!", Toast.LENGTH_SHORT)
+                            .show()
+                        binding.editTextName.text.clear()
+                        binding.editTextEmail.text.clear()
+                        binding.editTextPassword.text.clear()
+                        auth.signOut()
+                        nav.navigate(R.id.loginFragment)
+                    }
+                    .addOnFailureListener { e ->
+                        // Failure handling for location data
+                        Toast.makeText(
+                            context,
+                            "Failed to save location data: ${e.message}",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 Toast.makeText(context, "Account created successfully!", Toast.LENGTH_SHORT)
                     .show()
-                binding.editTextName.text.clear()
-                binding.editTextEmail.text.clear()
-                binding.editTextPassword.text.clear()
-                auth.signOut()
-                nav.navigate(R.id.loginFragment)
-            }else{
+            } else {
                 Toast.makeText(context, "Failed to create user!", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun generateRandomCoordinates(): Pair<Double, Double> {
+        // Define latitude and longitude bounds for Kuala Lumpur
+        val klLatitudeMin = 3.0
+        val klLatitudeMax = 3.3
+        val klLongitudeMin = 101.5
+        val klLongitudeMax = 101.8
+
+        // Generate random latitude within the bounds of Kuala Lumpur
+        val latitude = Random.nextDouble(klLatitudeMin, klLatitudeMax)
+
+        // Generate random longitude within the bounds of Kuala Lumpur
+        val longitude = Random.nextDouble(klLongitudeMin, klLongitudeMax)
+
+        return Pair(latitude, longitude)
     }
 
     private fun validateInputFields(): Boolean {
@@ -97,8 +137,9 @@ class RegisterFragment : Fragment() {
             binding.editTextEmail.error = "This field is required!"
             return false
         }
-        if (!isValidTarumtEmail(email)){
+        if (!isValidTarumtEmail(email)) {
             binding.editTextEmail.error = "Invalid email format/please use TARUMT email"
+            return false
         }
         if (pwd == "") {
             binding.editTextPassword.error = "This field is required!"
@@ -112,10 +153,10 @@ class RegisterFragment : Fragment() {
     }
 
     private fun isValidTarumtEmail(email: String): Boolean {
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             return false
         }
-        if (!email.contains("@student.tarc.edu.my")){
+        if (!email.contains("@student.tarc.edu.my")) {
             return false
         }
         return true
